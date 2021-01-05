@@ -100,7 +100,8 @@ mManager.start() | mManager.stop()
 Окончательная остановка на то и окончательная, что после нее объект не пригоден к использованию.
 Для этого нужен метод `terminate()`.
 
-```class Manager {
+```
+class Manager {
 public:
     Manager() : mStarted(false), mTerminated(false) {}
     void start() {
@@ -145,5 +146,28 @@ private:
     m.reset();
 ```
 
-
+### Вопрос для самоконтроля.
+```
+Имеет ли смысл явное использование мьютекса в конструкторе и деструкторе объектов, которые могут использоваться в `std::shared_ptr`?
+class Example1 {
+public:
+    Example1() {
+        std::lock_guard<std::mutex> lk(mMutex);
+        mStarted = false;
+    }
+    ~Example1() {
+        std::lock_guard<std::mutex> lk(mMutex);
+        if (mStarted) {
+            // do something
+        }
+    }
+private:
+    std::mutex mMutex;
+    bool mStarted;
+};
  
+
+    std::shared_ptr<Example1> e1;
+    std::shared_ptr<Example1> e2 = e1;
+    // e1 and e2 and used and released in separate threads
+```

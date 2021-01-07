@@ -78,7 +78,7 @@ private:
 
 Thread 1 | Thread 2
 ---------| --------
-mManager.start() | mManager.stop()
+`mManager.start()` | `mManager.stop()`
 
 После выполнения такого кода, не смотря на то, что гарантируется целостность внутреннего состояния `Manager`, не известно, создался ли новый поток, или нет.
 И как бы мы не старались, внутренними средствами `Manager` решить эту проблему невозможно, 
@@ -192,18 +192,18 @@ public:
 Следующий код очевидно небезопасный.
 Thread 1 | Thread 2| Thread 3
 ---------| --------|---------
-mSharedObject = std::shared_ptr<SharedObject>(new SharedObject()); | mSharedObject.reset(); | `if (mSharedObject) { mSharedObject->method(); }`
+`mSharedObject = `<br>`std::shared_ptr<SharedObject>(new SharedObject());` | `mSharedObject.reset();` | `if (mSharedObject)`<br>`  mSharedObject->method();`
 
 Проблема в том, что и следующий код точно так же небезопасен.
 Thread 1 | Thread 2| Thread 3
 ---------| --------|---------
-mSharedObject = std::shared_ptr<SharedObject>(new SharedObject()); | mSharedObject.reset(); | `std::shared_ptr<SharedObject> sharedObject = mSharedObject;`<br>`if (sharedObject) { sharedObject->method(); }`
+`mSharedObject = `<br>`std::shared_ptr<SharedObject>(new SharedObject());` | `mSharedObject.reset();` | `std::shared_ptr<SharedObject> sharedObject = `<br>`mSharedObject;`<br>`if (sharedObject) { sharedObject->method(); }`
 
 Объясняется это тем, что реализация всех этих трех операций может быть сделана следующим образом.
 
 Thread 1 | Thread 2| Thread 3
 ---------| --------|---------
-`mSharedObject = std::shared_ptr<SharedObject>(new SharedObject());` | `mSharedObject.reset();` | `if (mSharedObject) { mSharedObject->method(); }`
+`mSharedObject = `<br>`std::shared_ptr<SharedObject>(new SharedObject());` | `mSharedObject.reset();` | `if (mSharedObject)`<br>` mSharedObject->method();`
 
 * Присваивание.
 ```

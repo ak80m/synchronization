@@ -197,13 +197,9 @@ Thread 1 | Thread 2| Thread 3
 Проблема в том, что и следующий код точно так же небезопасен.
 Thread 1 | Thread 2| Thread 3
 ---------| --------|---------
-`mSharedObject = `<br>`std::shared_ptr<SharedObject>(new SharedObject());` | `mSharedObject.reset();` | `std::shared_ptr<SharedObject> sharedObject = `<br>`mSharedObject;`<br>`if (sharedObject) { sharedObject->method(); }`
+`mSharedObject = `<br>`std::shared_ptr<SharedObject>(new SharedObject());` | `mSharedObject.reset();` | `std::shared_ptr<SharedObject> sharedObject = `<br>`mSharedObject;`<br>`if (sharedObject)`<br>`  sharedObject->method();`
 
 Объясняется это тем, что реализация всех этих трех операций может быть сделана следующим образом.
-
-Thread 1 | Thread 2| Thread 3
----------| --------|---------
-`mSharedObject = `<br>`std::shared_ptr<SharedObject>(new SharedObject());` | `mSharedObject.reset();` | `if (mSharedObject)`<br>` mSharedObject->method();`
 
 * Присваивание.
 ```

@@ -1,6 +1,8 @@
 # Prerequisites
 *.d
 *.tmp
+*.vs
+Debug
 
 # Compiled Object files
 *.slo
